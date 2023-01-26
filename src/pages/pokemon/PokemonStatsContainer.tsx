@@ -1,7 +1,16 @@
-import { useRouteLoaderData } from "react-router-dom";
+import useSWR from "swr";
+import { useParams, useRouteLoaderData } from "react-router-dom";
 
 const PokemonStatsContainer = () => {
-  const pokemon = useRouteLoaderData("apps");
+  const { pokemonId } = useParams();
+  const { data: pokemon, isLoading } = useSWR(
+    `https://pokeapi.co/api/v2/pokemon/${pokemonId}`,
+    (url) => fetch(url).then((res) => res.json())
+  );
+
+  if (isLoading) {
+    return <p>loading...</p>;
+  }
 
   return (
     <>
