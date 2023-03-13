@@ -1,20 +1,10 @@
-import useSWR from "swr";
-import { useParams } from "react-router-dom";
-import PokemonPage from "./PokemonPage";
+import { useLoaderData } from "react-router-dom";
 
 const PokemonStatsContainer = () => {
-  const { pokemonId } = useParams();
-  const { data: pokemon, isLoading } = useSWR(
-    `https://pokeapi.co/api/v2/pokemon/${pokemonId}`,
-    (url) => fetch(url).then((res) => res.json())
-  );
-
-  if (isLoading) {
-    return <p>loading...</p>;
-  }
+  const pokemon: any = useLoaderData();
 
   return (
-    <PokemonPage>
+    <>
       <h1>{pokemon.name}</h1>
 
       <div>
@@ -36,7 +26,7 @@ const PokemonStatsContainer = () => {
           </tbody>
         </table>
       </div>
-    </PokemonPage>
+    </>
   );
 };
 

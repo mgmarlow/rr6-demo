@@ -1,30 +1,38 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { RouteObject } from "react-router-dom";
+import ErrorPage from "./pages/ErrorPage";
 import IndexContainer from "./pages/IndexContainer";
-import PokemonIndexContainer from "./pages/pokemon/PokemonIndexContainer";
-import PokemonShowContainer from "./pages/pokemon/PokemonShowContainer";
 
-/* const routes: RouteObject[] = [
- *   {
- *     path: "/",
- *     element: <IndexContainer />,
- *   },
- *   {
- *     path: "/pokemon",
- *     element: <PokemonIndexContainer />,
- *   },
- *   { path: "/pokemon/:pokemonId", element: <PokemonShowContainer /> },
- * ]; */
-
-const Router = () => {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<IndexContainer />} />
-        <Route path="/pokemon" element={<PokemonIndexContainer />} />
-        <Route path="/pokemon/:pokemonId" element={<PokemonShowContainer />} />
-      </Routes>
-    </BrowserRouter>
-  );
-};
-
-export default Router;
+export const routes: RouteObject[] = [
+  {
+    path: "/",
+    element: <IndexContainer />,
+  },
+  {
+    path: "pokemon",
+    errorElement: <ErrorPage />,
+    async lazy() {
+      let { Layout } = await import("./pages/pokemon/PokemonRoutes");
+      return { Component: Layout };
+    },
+    children: [
+      {
+        index: true,
+        async lazy() {
+          let { Index } = await import("./pages/pokemon/PokemonRoutes");
+          return { Component: Index };
+        },
+      },
+      {
+        path: ":pokemonId",
+        loader: async ({ params }) => {
+          const { pokemonId } = params;
+          return fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
+        },
+        async lazy() {
+          let { Show } = await import("./pages/pokemon/PokemonRoutes");
+          return { Component: Show };
+        },
+      },
+    ],
+  },
+];

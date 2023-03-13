@@ -1,6 +1,5 @@
 import useSWR from "swr";
 import { Link } from "react-router-dom";
-import PokemonPage from "./PokemonPage";
 
 const PokemonLinks = ({ pokemons }: { pokemons: any[] }) => {
   const links = pokemons.map((p, i) => (
@@ -19,7 +18,7 @@ const AppPicker = () => {
   );
 
   return (
-    <PokemonPage>
+    <>
       <h1>All Pokemon</h1>
 
       <section>
@@ -29,7 +28,7 @@ const AppPicker = () => {
           <PokemonLinks pokemons={pokemonResponse.results} />
         )}
       </section>
-    </PokemonPage>
+    </>
   );
 };
 
